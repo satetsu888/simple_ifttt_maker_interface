@@ -1,0 +1,76 @@
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.2/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.2/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+</head>
+<body>
+    <div id="content"></div>
+    <script type="text/babel">
+        var ActionList = React.createClass({
+            getInitialState: function() {
+                return {data: []};
+            },
+            componentDidMount: function() {
+                $.ajax({
+                    url: this.props.url,
+                    dataType: 'json',
+                    cache: false,
+                    success: function(response) {
+                        this.setState({data: response.data});
+                    }.bind(this),
+                    error: function(xhr, status, err) {
+                        console.error(this.props.url, status, err.toString());
+                    }.bind(this)
+                });
+            },
+            render: function(){
+                var actionNode = this.state.data.map(function(action, index){
+                    return (
+                        <ActionElement data={action} key={index}/>
+                    )
+                });
+                return (
+                    <ul className="actionList">
+                        {actionNode}
+                    </ul>
+                );
+            }
+        });
+        var ActionElement = React.createClass({
+            getInitialState: function() {
+                return {disabled: false};
+            },
+            handlePush: function(e){
+                e.preventDefault();
+                this.setState({disabled: true});
+                $.post({
+                    url: '/api/fire',
+                    dataType: 'json',
+                    data: this.props.data,
+                    success: function(response) {
+                        this.setState({disabled: false});
+                    }.bind(this),
+                    error: function(xhr, status, err) {
+                        console.error(this.props.url, status, err.toString());
+                        this.setState({disabled: false});
+                    }.bind(this),
+                });
+                return;
+            },
+            render: function(){
+                return(
+                    <li className="actionElement">
+                        <button onClick={this.handlePush} disabled={this.state.disabled}>
+                            {this.props.data.action} {this.props.data.value1}
+                        </button>
+                    </li>
+                );
+            }
+        });
+        ReactDOM.render(
+            <ActionList url='./api/menus' />,
+            document.getElementById('content')
+        );
+    </script>
+</body>
