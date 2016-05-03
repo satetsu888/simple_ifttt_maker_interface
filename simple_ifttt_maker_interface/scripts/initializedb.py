@@ -14,6 +14,7 @@ from pyramid.scripts.common import parse_vars
 from ..models import (
     DBSession,
     Base,
+    MenuModel,
     )
 
 
@@ -34,3 +35,6 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
+    with transaction.manager:
+        model = MenuModel()
+        DBSession.add(model)
