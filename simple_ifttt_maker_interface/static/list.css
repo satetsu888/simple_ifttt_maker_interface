@@ -1,0 +1,9 @@
+ul.actionList {
+    list-style-type: none;
+    -webkit-padding-start: 0px;
+}
+
+.actionElement > button {
+    width: 100%;
+    height 5%;
+}
