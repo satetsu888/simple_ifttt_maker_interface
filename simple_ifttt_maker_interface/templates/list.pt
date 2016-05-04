@@ -62,7 +62,7 @@
             render: function(){
                 return(
                     <li className="actionElement">
-                        <button onClick={this.handlePush} disabled={this.state.disabled}>
+                        <button onMouseDown={this.handlePush} disabled={this.state.disabled}>
                             {this.props.data.action} {this.props.data.value1}
                         </button>
                     </li>
