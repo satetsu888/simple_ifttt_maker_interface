@@ -13,6 +13,8 @@ import urllib.request
 
 import configparser
 
+from pyicloud import PyiCloudService
+
 config = configparser.ConfigParser()
 config.read('user.conf')
 
@@ -28,10 +30,13 @@ def menus(request):
 @view_config(route_name='fire', renderer='json')
 def fire(request):
 
+    if(request.params["action"] == 'AddReminder'):
+        fire_icloud_reminder(request.params["value1"])
+        return {}
+
     key = config["ifttt"]["maker_key"]
 
     url = 'https://maker.ifttt.com/trigger/' + request.params["action"] + '/with/key/' + key
-    print(url)
     data = {
         "value1": request.params["value1"],
         "value2": request.params["value2"],
@@ -42,10 +47,11 @@ def fire(request):
             data=json.dumps(data).encode('utf8'),
             headers={'content-type': 'application/json'},
     )
-    from pprint import pprint
-    pprint(req)
     response = urllib.request.urlopen(req)
 
-    pprint(response)
-
     return {}
+
+def fire_icloud_reminder(value):
+    api = PyiCloudService(config["icloud"]["email"], config["icloud"]["password"])
+    return api.reminders.post(value,'',config["icloud"]["collection"])
+
