@@ -1,5 +1,6 @@
 <head>
     <link rel="stylesheet" type="text/css" href="static/list.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.2/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.2/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
@@ -12,7 +13,7 @@
             getInitialState: function() {
                 return {data: []};
             },
-            componentDidMount: function() {
+            reload: function() {
                 $.ajax({
                     url: this.props.url,
                     dataType: 'json',
@@ -25,6 +26,9 @@
                     }.bind(this)
                 });
             },
+            componentDidMount: function() {
+                this.reload();
+            },
             render: function(){
                 var actionNode = this.state.data.map(function(action, index){
                     return (
@@ -32,9 +36,12 @@
                     )
                 });
                 return (
+                <div>
+                    <button className="reloadButton" onClick={this.reload}><i className="fa fa-refresh" aria-hidden="true"></i></button>
                     <ul className="actionList">
                         {actionNode}
                     </ul>
+                </div>
                 );
             }
         });

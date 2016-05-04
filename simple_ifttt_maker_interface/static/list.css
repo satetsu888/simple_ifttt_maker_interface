@@ -7,3 +7,11 @@ ul.actionList {
     width: 100%;
     height 5%;
 }
+
+button.reloadButton {
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+    display: block;
+    margin-left: auto;
+}
